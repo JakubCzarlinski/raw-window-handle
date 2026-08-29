@@ -32,6 +32,10 @@ use crate::{HandleError, RawDisplayHandle, RawWindowHandle};
 /// [`glutin`]: https://crates.io/crates/glutin
 pub trait HasDisplayHandle {
     /// Get a handle to the display controller of the windowing system.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error when the display handle is temporarily unavailable or unsupported.
     fn display_handle(&self) -> Result<DisplayHandle<'_>, HandleError>;
 }
 
@@ -93,7 +97,7 @@ impl fmt::Debug for DisplayHandle<'_> {
     }
 }
 
-impl<'a> DisplayHandle<'a> {
+impl DisplayHandle<'_> {
     /// Create a `DisplayHandle` from a [`RawDisplayHandle`].
     ///
     /// # Safety
@@ -107,7 +111,8 @@ impl<'a> DisplayHandle<'a> {
     /// platform provides.
     ///
     /// It is not possible to invalidate a [`DisplayHandle`] on any platform without additional unsafe code.
-    pub unsafe fn borrow_raw(raw: RawDisplayHandle) -> Self {
+    #[must_use]
+    pub const unsafe fn borrow_raw(raw: RawDisplayHandle) -> Self {
         Self {
             raw,
             _marker: PhantomData,
@@ -115,7 +120,8 @@ impl<'a> DisplayHandle<'a> {
     }
 
     /// Get the underlying raw display handle.
-    pub fn as_raw(&self) -> RawDisplayHandle {
+    #[must_use]
+    pub const fn as_raw(&self) -> RawDisplayHandle {
         self.raw
     }
 }
@@ -138,7 +144,7 @@ impl From<DisplayHandle<'_>> for RawDisplayHandle {
     }
 }
 
-impl<'a> HasDisplayHandle for DisplayHandle<'a> {
+impl HasDisplayHandle for DisplayHandle<'_> {
     fn display_handle(&self) -> Result<DisplayHandle<'_>, HandleError> {
         Ok(*self)
     }
@@ -165,6 +171,10 @@ impl<'a> HasDisplayHandle for DisplayHandle<'a> {
 /// [`glutin`]: https://crates.io/crates/glutin
 pub trait HasWindowHandle {
     /// Get a handle to the window.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error when the window handle is temporarily unavailable or unsupported.
     fn window_handle(&self) -> Result<WindowHandle<'_>, HandleError>;
 }
 
@@ -229,7 +239,7 @@ impl fmt::Debug for WindowHandle<'_> {
     }
 }
 
-impl<'a> WindowHandle<'a> {
+impl WindowHandle<'_> {
     /// Borrow a `WindowHandle` from a [`RawWindowHandle`].
     ///
     /// # Safety
@@ -254,7 +264,8 @@ impl<'a> WindowHandle<'a> {
     /// It is *also* possible for the window to be replaced with another, valid-but-different window. User
     /// code should be aware of this possibility, and should be ready to soundly handle the possible error
     /// conditions that can arise from this.
-    pub unsafe fn borrow_raw(raw: RawWindowHandle) -> Self {
+    #[must_use]
+    pub const unsafe fn borrow_raw(raw: RawWindowHandle) -> Self {
         Self {
             raw,
             _marker: PhantomData,
@@ -262,8 +273,9 @@ impl<'a> WindowHandle<'a> {
     }
 
     /// Get the underlying raw window handle.
-    pub fn as_raw(&self) -> RawWindowHandle {
-        self.raw.clone()
+    #[must_use]
+    pub const fn as_raw(&self) -> RawWindowHandle {
+        self.raw
     }
 }
 

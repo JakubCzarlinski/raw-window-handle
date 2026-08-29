@@ -26,7 +26,8 @@ impl DrmDisplayHandle {
     /// # fd = 0;
     /// let handle = DrmDisplayHandle::new(fd);
     /// ```
-    pub fn new(fd: i32) -> Self {
+    #[must_use]
+    pub const fn new(fd: i32) -> Self {
         Self { fd }
     }
 }
@@ -58,7 +59,8 @@ impl DrmWindowHandle {
     /// # plane = 0;
     /// let handle = DrmWindowHandle::new(plane);
     /// ```
-    pub fn new(plane: u32) -> Self {
+    #[must_use]
+    pub const fn new(plane: u32) -> Self {
         Self { plane }
     }
 }

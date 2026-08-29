@@ -37,9 +37,6 @@
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
-#[cfg(feature = "std")]
-extern crate std;
-
 mod android;
 mod appkit;
 mod borrowed;
@@ -75,11 +72,8 @@ pub use web::{
 pub use windows::{Win32WindowHandle, WinRtWindowHandle, WindowsDisplayHandle};
 pub use x11::{XcbDisplayHandle, XcbWindowHandle, XlibDisplayHandle, XlibWindowHandle};
 
-#[cfg(not(feature = "std"))]
 use core::error::Error;
 use core::fmt;
-#[cfg(feature = "std")]
-use std::error::Error; // For MSRV.
 
 /// A window handle for a particular windowing system.
 ///
@@ -100,7 +94,7 @@ use std::error::Error; // For MSRV.
 /// [`HasWindowHandle`] implementor is completely allowed to return something
 /// unexpected. (For example, it's legal for someone to return a
 /// [`RawWindowHandle::Xlib`] on macOS, it would just be weird, and probably
-/// requires something like XQuartz be used).
+/// requires something like `XQuartz` be used).
 ///
 /// ## Thread Safety
 ///
@@ -109,16 +103,16 @@ use std::error::Error; // For MSRV.
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum RawWindowHandle {
-    /// A raw window handle for UIKit (Apple's non-macOS windowing library).
+    /// A raw window handle for `UIKit` (Apple's non-macOS windowing library).
     ///
     /// ## Availability Hints
     /// This variant is used on iOS, tvOS, watchOS, visionOS, and Mac
-    /// Catalyst, as these are the targets that (currently) support UIKit.
+    /// Catalyst, as these are the targets that (currently) support `UIKit`.
     ///
     /// Note that Mac Catalyst (`$arch-apple-ios-macabi` targets), can use
-    /// UIKit *or* AppKit.
+    /// `UIKit` *or* `AppKit`.
     UiKit(UiKitWindowHandle),
-    /// A raw window handle for AppKit.
+    /// A raw window handle for `AppKit`.
     ///
     /// ## Availability Hints
     /// This variant is used on macOS, although Mac Catalyst can also use it
@@ -130,10 +124,10 @@ pub enum RawWindowHandle {
     /// This variant is used by the Orbital Windowing System in the Redox
     /// operating system.
     Orbital(OrbitalWindowHandle),
-    /// A raw window handle for the OpenHarmony OS NDK
+    /// A raw window handle for the `OpenHarmony` OS NDK
     ///
     /// ## Availability Hints
-    /// This variant is used on OpenHarmony OS (`target_env = "ohos"`).
+    /// This variant is used on `OpenHarmony` OS (`target_env = "ohos"`).
     OhosNdk(OhosNdkWindowHandle),
     /// A raw window handle for Xlib.
     ///
@@ -164,14 +158,14 @@ pub enum RawWindowHandle {
     ///
     /// ## Availability Hints
     /// This variant is present regardless of windowing backend and likely to be used with
-    /// EGL_MESA_platform_gbm or EGL_KHR_platform_gbm.
+    /// `EGL_MESA_platform_gbm` or `EGL_KHR_platform_gbm`.
     Gbm(GbmWindowHandle),
     /// A raw window handle for Win32.
     ///
     /// ## Availability Hints
     /// This variant is used on Windows systems.
     Win32(Win32WindowHandle),
-    /// A raw window handle for WinRT.
+    /// A raw window handle for `WinRT`.
     ///
     /// ## Availability Hints
     /// This variant is used on Windows systems.
@@ -198,7 +192,7 @@ pub enum RawWindowHandle {
     /// A raw window handle for Haiku.
     ///
     /// ## Availability Hints
-    /// This variant is used on HaikuOS.
+    /// This variant is used on `HaikuOS`.
     Haiku(HaikuWindowHandle),
 }
 
@@ -227,7 +221,7 @@ pub enum RawWindowHandle {
 /// [`HasDisplayHandle`] implementor is completely allowed to return something
 /// unexpected. (For example, it's legal for someone to return a
 /// [`RawDisplayHandle::Xlib`] on macOS, it would just be weird, and probably
-/// requires something like XQuartz be used).
+/// requires something like `XQuartz` be used).
 ///
 /// ## Thread Safety
 ///
@@ -236,16 +230,16 @@ pub enum RawWindowHandle {
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum RawDisplayHandle {
-    /// A raw display handle for UIKit (Apple's non-macOS windowing library).
+    /// A raw display handle for `UIKit` (Apple's non-macOS windowing library).
     ///
     /// ## Availability Hints
     /// This variant is used on iOS, tvOS, watchOS, visionOS, and Mac
-    /// Catalyst, as these are the targets that (currently) support UIKit.
+    /// Catalyst, as these are the targets that (currently) support `UIKit`.
     ///
     /// Note that Mac Catalyst (`$arch-apple-ios-macabi` targets), can use
-    /// UIKit *or* AppKit.
+    /// `UIKit` *or* `AppKit`.
     UiKit(UiKitDisplayHandle),
-    /// A raw display handle for AppKit.
+    /// A raw display handle for `AppKit`.
     ///
     /// ## Availability Hints
     /// This variant is used on macOS, although Mac Catalyst can also use it
@@ -257,10 +251,10 @@ pub enum RawDisplayHandle {
     /// This variant is used by the Orbital Windowing System in the Redox
     /// operating system.
     Orbital(OrbitalDisplayHandle),
-    /// A raw display handle for OpenHarmony OS NDK
+    /// A raw display handle for `OpenHarmony` OS NDK
     ///
     /// ## Availability Hints
-    /// This variant is used on OpenHarmony OS (`target_env = "ohos"`).
+    /// This variant is used on `OpenHarmony` OS (`target_env = "ohos"`).
     Ohos(OhosDisplayHandle),
     /// A raw display handle for Xlib.
     ///
@@ -291,7 +285,7 @@ pub enum RawDisplayHandle {
     ///
     /// ## Availability Hints
     /// This variant is present regardless of windowing backend and likely to be used with
-    /// EGL_MESA_platform_gbm or EGL_KHR_platform_gbm.
+    /// `EGL_MESA_platform_gbm` or `EGL_KHR_platform_gbm`.
     Gbm(GbmDisplayHandle),
     /// A raw display handle for Win32.
     ///
@@ -311,7 +305,7 @@ pub enum RawDisplayHandle {
     /// A raw display handle for Haiku.
     ///
     /// ## Availability Hints
-    /// This variant is used on HaikuOS.
+    /// This variant is used on `HaikuOS`.
     Haiku(HaikuDisplayHandle),
 }
 

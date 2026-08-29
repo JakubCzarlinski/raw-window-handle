@@ -276,7 +276,7 @@ macro_rules! handle_type {
                 // SAFETY: Above vtable is valid for this `Rc`
                 unsafe {
                     $name::from_raw_parts(
-                        NonNull::new_unchecked(alloc::rc::Rc::into_raw(value).cast::<()>() as *mut ()),
+                        NonNull::new_unchecked(alloc::rc::Rc::into_raw(value).cast::<()>().cast_mut()),
                         &Refcounted::<T>::VTABLE
                     )
                 }
@@ -504,7 +504,7 @@ macro_rules! handle_type {
                 // SAFETY: Above vtable is valid for this `Arc`
                 unsafe {
                     $sync::new($name::from_raw_parts(
-                        NonNull::new_unchecked(alloc::sync::Arc::into_raw(value).cast::<()>() as *mut ()),
+                        NonNull::new_unchecked(alloc::sync::Arc::into_raw(value).cast::<()>().cast_mut()),
                         &Atomic::<T>::VTABLE
                     ))
                 }

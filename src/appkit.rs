@@ -2,9 +2,9 @@ use core::ffi::c_void;
 use core::marker::PhantomData;
 use core::ptr::NonNull;
 
-use super::DisplayHandle;
+use super::{DisplayHandle, RawDisplayHandle};
 
-/// Raw display handle for AppKit.
+/// Raw display handle for `AppKit`.
 ///
 /// ## Thread Safety
 ///
@@ -29,7 +29,8 @@ impl AppKitDisplayHandle {
     /// # use raw_window_handle::AppKitDisplayHandle;
     /// let handle = AppKitDisplayHandle::new();
     /// ```
-    pub fn new() -> Self {
+    #[must_use]
+    pub const fn new() -> Self {
         Self {
             _thread_unsafe: PhantomData,
         }
@@ -50,13 +51,14 @@ impl DisplayHandle<'static> {
     /// let handle = DisplayHandle::appkit();
     /// do_something(handle);
     /// ```
-    pub fn appkit() -> Self {
+    #[must_use]
+    pub const fn appkit() -> Self {
         // SAFETY: No data is borrowed.
-        unsafe { Self::borrow_raw(AppKitDisplayHandle::new().into()) }
+        unsafe { Self::borrow_raw(RawDisplayHandle::AppKit(AppKitDisplayHandle::new())) }
     }
 }
 
-/// Raw window handle for AppKit.
+/// Raw window handle for `AppKit`.
 ///
 /// # Example
 ///
@@ -93,7 +95,7 @@ impl DisplayHandle<'static> {
 ///
 /// ## Thread Safety
 ///
-/// Handles to AppKit objects can only be safely used from the main thread.
+/// Handles to `AppKit` objects can only be safely used from the main thread.
 /// Therefore, all Appkit objects are `!Send` and `!Sync`.
 /// This means that this type cannot be sent to or used from other threads.
 ///
@@ -138,7 +140,8 @@ impl AppKitWindowHandle {
     /// let handle = AppKitWindowHandle::new(ns_view.cast());
     /// # }
     /// ```
-    pub fn new(ns_view: NonNull<c_void>) -> Self {
+    #[must_use]
+    pub const fn new(ns_view: NonNull<c_void>) -> Self {
         Self { ns_view }
     }
 }

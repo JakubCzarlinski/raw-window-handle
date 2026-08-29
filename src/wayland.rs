@@ -32,7 +32,8 @@ impl WaylandDisplayHandle {
     /// # display = NonNull::from(&()).cast();
     /// let handle = WaylandDisplayHandle::new(display);
     /// ```
-    pub fn new(display: NonNull<c_void>) -> Self {
+    #[must_use]
+    pub const fn new(display: NonNull<c_void>) -> Self {
         Self { display }
     }
 }
@@ -68,7 +69,8 @@ impl WaylandWindowHandle {
     /// # surface = NonNull::from(&()).cast();
     /// let handle = WaylandWindowHandle::new(surface);
     /// ```
-    pub fn new(surface: NonNull<c_void>) -> Self {
+    #[must_use]
+    pub const fn new(surface: NonNull<c_void>) -> Self {
         Self { surface }
     }
 }

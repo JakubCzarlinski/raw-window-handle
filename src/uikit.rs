@@ -2,16 +2,16 @@ use core::ffi::c_void;
 use core::marker::PhantomData;
 use core::ptr::NonNull;
 
-use super::DisplayHandle;
+use super::{DisplayHandle, RawDisplayHandle};
 
-/// Raw display handle for UIKit.
+/// Raw display handle for `UIKit`.
 ///
 /// ## Thread Safety
 ///
 /// This type has the same thread safety guarantees as [`UiKitWindowHandle`].
 ///
-/// Note that this type does not contain any UiKit objects. However,
-/// it is kept `!Send` and `!Sync` for the event that UiKit objects are
+/// Note that this type does not contain any `UiKit` objects. However,
+/// it is kept `!Send` and `!Sync` for the event that `UiKit` objects are
 /// added to this type.
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -29,7 +29,8 @@ impl UiKitDisplayHandle {
     /// # use raw_window_handle::UiKitDisplayHandle;
     /// let handle = UiKitDisplayHandle::new();
     /// ```
-    pub fn new() -> Self {
+    #[must_use]
+    pub const fn new() -> Self {
         Self {
             _thread_unsafe: PhantomData,
         }
@@ -50,13 +51,14 @@ impl DisplayHandle<'static> {
     /// let handle = DisplayHandle::uikit();
     /// do_something(handle);
     /// ```
-    pub fn uikit() -> Self {
+    #[must_use]
+    pub const fn uikit() -> Self {
         // SAFETY: No data is borrowed.
-        unsafe { Self::borrow_raw(UiKitDisplayHandle::new().into()) }
+        unsafe { Self::borrow_raw(RawDisplayHandle::UiKit(UiKitDisplayHandle::new())) }
     }
 }
 
-/// Raw window handle for UIKit.
+/// Raw window handle for `UIKit`.
 ///
 /// # Example
 ///
@@ -123,8 +125,8 @@ impl DisplayHandle<'static> {
 ///
 /// ## Thread Safety
 ///
-/// Handles to UiKit objects can only be safely used from the main thread.
-/// Therefore, all UiKit objects are `!Send` and `!Sync`.
+/// Handles to `UiKit` objects can only be safely used from the main thread.
+/// Therefore, all `UiKit` objects are `!Send` and `!Sync`.
 /// This means that this type cannot be sent to or used from other threads.
 ///
 /// In addition, it is also expected that the consumer will take precautions to
@@ -167,7 +169,8 @@ impl UiKitWindowHandle {
     /// let handle = UiKitWindowHandle::new(ui_view.cast());
     /// # }
     /// ```
-    pub fn new(ui_view: NonNull<c_void>) -> Self {
+    #[must_use]
+    pub const fn new(ui_view: NonNull<c_void>) -> Self {
         Self { ui_view }
     }
 }

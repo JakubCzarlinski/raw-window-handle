@@ -18,13 +18,13 @@ use core::ffi::c_void;
 use core::marker::PhantomData;
 use core::ptr::NonNull;
 
-use super::DisplayHandle;
+use super::{DisplayHandle, RawDisplayHandle};
 
-/// Raw display handle for OpenHarmony.
+/// Raw display handle for `OpenHarmony`.
 ///
 /// ## Thread-Safety
 ///
-/// OpenHarmony [expects] that UI primitives will only be called from one
+/// `OpenHarmony` [expects] that UI primitives will only be called from one
 /// thread. Therefore, all OHOS objects are `!Send` and `!Sync`. This means
 /// that this type cannot be sent to or used from other threads.
 ///
@@ -49,7 +49,8 @@ impl OhosDisplayHandle {
     /// # use raw_window_handle::OhosDisplayHandle;
     /// let handle = OhosDisplayHandle::new();
     /// ```
-    pub fn new() -> Self {
+    #[must_use]
+    pub const fn new() -> Self {
         Self {
             _thread_unsafe: PhantomData,
         }
@@ -70,9 +71,10 @@ impl DisplayHandle<'static> {
     /// let handle = DisplayHandle::ohos();
     /// do_something(handle);
     /// ```
-    pub fn ohos() -> Self {
+    #[must_use]
+    pub const fn ohos() -> Self {
         // SAFETY: No data is borrowed.
-        unsafe { Self::borrow_raw(OhosDisplayHandle::new().into()) }
+        unsafe { Self::borrow_raw(RawDisplayHandle::Ohos(OhosDisplayHandle::new())) }
     }
 }
 
@@ -80,7 +82,7 @@ impl DisplayHandle<'static> {
 ///
 /// ## Thread-Safety
 ///
-/// OpenHarmony [expects] that UI primitives will only be called from one
+/// `OpenHarmony` [expects] that UI primitives will only be called from one
 /// thread. Therefore, all OHOS objects are `!Send` and `!Sync`. This means
 /// that this type cannot be sent to or used from other threads.
 ///
@@ -92,7 +94,7 @@ pub struct OhosNdkWindowHandle {
 }
 
 impl OhosNdkWindowHandle {
-    /// Create a new handle to an [`OHNativeWindow`] on OpenHarmony.
+    /// Create a new handle to an [`OHNativeWindow`] on `OpenHarmony`.
     ///
     /// The handle will typically be created from an [`XComponent`], consult the
     /// [native `XComponent` Guidelines] for more details.
@@ -117,7 +119,8 @@ impl OhosNdkWindowHandle {
     ///     let handle = OhosNdkWindowHandle::new(NonNull::new(window).unwrap());
     /// }
     /// ```
-    pub fn new(native_window: NonNull<c_void>) -> Self {
+    #[must_use]
+    pub const fn new(native_window: NonNull<c_void>) -> Self {
         Self { native_window }
     }
 }

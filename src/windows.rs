@@ -1,7 +1,7 @@
 use core::ffi::c_void;
 use core::ptr::NonNull;
 
-use super::DisplayHandle;
+use super::{DisplayHandle, RawDisplayHandle};
 
 /// Raw display handle for Windows.
 ///
@@ -20,7 +20,8 @@ impl WindowsDisplayHandle {
     /// # use raw_window_handle::WindowsDisplayHandle;
     /// let handle = WindowsDisplayHandle::new();
     /// ```
-    pub fn new() -> Self {
+    #[must_use]
+    pub const fn new() -> Self {
         Self {}
     }
 }
@@ -39,9 +40,10 @@ impl DisplayHandle<'static> {
     /// let handle = DisplayHandle::windows();
     /// do_something(handle);
     /// ```
-    pub fn windows() -> Self {
+    #[must_use]
+    pub const fn windows() -> Self {
         // SAFETY: No data is borrowed.
-        unsafe { Self::borrow_raw(WindowsDisplayHandle::new().into()) }
+        unsafe { Self::borrow_raw(RawDisplayHandle::Windows(WindowsDisplayHandle::new())) }
     }
 }
 
@@ -98,7 +100,8 @@ impl Win32WindowHandle {
     /// # #[cfg(only_for_showcase)]
     /// unsafe { assert_eq!(GetWindowThreadProcessId(HWND(handle.hwnd.as_ptr()), None), GetCurrentThreadId()) };
     /// ```
-    pub fn new(hwnd: NonNull<c_void>) -> Self {
+    #[must_use]
+    pub const fn new(hwnd: NonNull<c_void>) -> Self {
         Self {
             hwnd,
             hinstance: None,
@@ -106,11 +109,11 @@ impl Win32WindowHandle {
     }
 }
 
-/// Raw window handle for WinRT.
+/// Raw window handle for `WinRT`.
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct WinRtWindowHandle {
-    /// A WinRT `CoreWindow` handle.
+    /// A `WinRT` `CoreWindow` handle.
     pub core_window: NonNull<c_void>,
 }
 
@@ -131,7 +134,8 @@ impl WinRtWindowHandle {
     /// # window = NonNull::from(&());
     /// let handle = WinRtWindowHandle::new(window.cast());
     /// ```
-    pub fn new(core_window: NonNull<c_void>) -> Self {
+    #[must_use]
+    pub const fn new(core_window: NonNull<c_void>) -> Self {
         Self { core_window }
     }
 }

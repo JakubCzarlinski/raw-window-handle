@@ -1,7 +1,7 @@
 use core::ffi::c_void;
 use core::ptr::NonNull;
 
-use super::DisplayHandle;
+use super::{DisplayHandle, RawDisplayHandle};
 
 /// Raw display handle for the Redox operating system.
 ///
@@ -31,7 +31,8 @@ impl OrbitalDisplayHandle {
     /// # use raw_window_handle::OrbitalDisplayHandle;
     /// let handle = OrbitalDisplayHandle::new();
     /// ```
-    pub fn new() -> Self {
+    #[must_use]
+    pub const fn new() -> Self {
         Self {}
     }
 }
@@ -50,9 +51,10 @@ impl DisplayHandle<'static> {
     /// let handle = DisplayHandle::orbital();
     /// do_something(handle);
     /// ```
-    pub fn orbital() -> Self {
+    #[must_use]
+    pub const fn orbital() -> Self {
         // SAFETY: No data is borrowed.
-        unsafe { Self::borrow_raw(OrbitalDisplayHandle::new().into()) }
+        unsafe { Self::borrow_raw(RawDisplayHandle::Orbital(OrbitalDisplayHandle::new())) }
     }
 }
 
@@ -93,7 +95,8 @@ impl OrbitalWindowHandle {
     /// # window = NonNull::from(&());
     /// let mut handle = OrbitalWindowHandle::new(window.cast());
     /// ```
-    pub fn new(window: NonNull<c_void>) -> Self {
+    #[must_use]
+    pub const fn new(window: NonNull<c_void>) -> Self {
         Self { window }
     }
 }

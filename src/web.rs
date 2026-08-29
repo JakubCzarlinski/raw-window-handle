@@ -1,6 +1,6 @@
 use core::marker::PhantomData;
 
-use super::DisplayHandle;
+use super::{DisplayHandle, RawDisplayHandle};
 
 /// Raw display handle for the Web.
 ///
@@ -33,7 +33,8 @@ impl WasmBindgenDisplay {
     /// # use raw_window_handle::WasmBindgenDisplay;
     /// let handle = WasmBindgenDisplay::new();
     /// ```
-    pub fn new() -> Self {
+    #[must_use]
+    pub const fn new() -> Self {
         Self {
             _thread_unsafe: PhantomData,
         }
@@ -54,9 +55,10 @@ impl DisplayHandle<'static> {
     /// let handle = DisplayHandle::wasm_bindgen();
     /// do_something(handle);
     /// ```
-    pub fn wasm_bindgen() -> Self {
+    #[must_use]
+    pub const fn wasm_bindgen() -> Self {
         // SAFETY: No data is borrowed.
-        unsafe { Self::borrow_raw(WasmBindgenDisplay::new().into()) }
+        unsafe { Self::borrow_raw(RawDisplayHandle::WasmBindgen(WasmBindgenDisplay::new())) }
     }
 }
 
@@ -108,7 +110,8 @@ impl WasmBindgenCanvasWindowHandle {
     ///     HtmlCanvasElement::ref_from_abi(handle.obj as u32)
     /// };
     /// ```
-    pub fn new(obj: usize) -> Self {
+    #[must_use]
+    pub const fn new(obj: usize) -> Self {
         Self {
             obj,
             _marker: PhantomData,
@@ -165,7 +168,8 @@ impl WasmBindgenOffscreenCanvasWindowHandle {
     ///     OffscreenCanvas::ref_from_abi(handle.obj as u32)
     /// };
     /// ```
-    pub fn new(obj: usize) -> Self {
+    #[must_use]
+    pub const fn new(obj: usize) -> Self {
         Self {
             obj,
             _marker: PhantomData,

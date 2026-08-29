@@ -1,7 +1,7 @@
 use core::ffi::c_void;
 use core::ptr::NonNull;
 
-use super::DisplayHandle;
+use super::{DisplayHandle, RawDisplayHandle};
 
 /// Raw display handle for Haiku.
 ///
@@ -30,7 +30,8 @@ impl HaikuDisplayHandle {
     /// # use raw_window_handle::HaikuDisplayHandle;
     /// let handle = HaikuDisplayHandle::new();
     /// ```
-    pub fn new() -> Self {
+    #[must_use]
+    pub const fn new() -> Self {
         Self {}
     }
 }
@@ -49,9 +50,10 @@ impl DisplayHandle<'static> {
     /// let handle = DisplayHandle::haiku();
     /// do_something(handle);
     /// ```
-    pub fn haiku() -> Self {
+    #[must_use]
+    pub const fn haiku() -> Self {
         // SAFETY: No data is borrowed.
-        unsafe { Self::borrow_raw(HaikuDisplayHandle::new().into()) }
+        unsafe { Self::borrow_raw(RawDisplayHandle::Haiku(HaikuDisplayHandle::new())) }
     }
 }
 
@@ -65,9 +67,9 @@ impl DisplayHandle<'static> {
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct HaikuWindowHandle {
-    /// A pointer to a BWindow object
+    /// A pointer to a `BWindow` object
     pub b_window: NonNull<c_void>,
-    /// A pointer to a BDirectWindow object that might be null
+    /// A pointer to a `BDirectWindow` object that might be null
     pub b_direct_window: Option<NonNull<c_void>>,
 }
 
@@ -91,7 +93,8 @@ impl HaikuWindowHandle {
     /// // Optionally set `b_direct_window`.
     /// handle.b_direct_window = None;
     /// ```
-    pub fn new(b_window: NonNull<c_void>) -> Self {
+    #[must_use]
+    pub const fn new(b_window: NonNull<c_void>) -> Self {
         Self {
             b_window,
             b_direct_window: None,

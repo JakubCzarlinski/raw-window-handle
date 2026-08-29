@@ -48,7 +48,8 @@ impl XlibDisplayHandle {
     /// # screen = 0;
     /// let handle = XlibDisplayHandle::new(Some(display), screen);
     /// ```
-    pub fn new(display: Option<NonNull<c_void>>, screen: c_int) -> Self {
+    #[must_use]
+    pub const fn new(display: Option<NonNull<c_void>>, screen: c_int) -> Self {
         Self { display, screen }
     }
 }
@@ -83,7 +84,8 @@ impl XlibWindowHandle {
     /// // Optionally set the visual ID.
     /// handle.visual_id = 0;
     /// ```
-    pub fn new(window: c_ulong) -> Self {
+    #[must_use]
+    pub const fn new(window: c_ulong) -> Self {
         Self {
             window,
             visual_id: 0,
@@ -137,7 +139,8 @@ impl XcbDisplayHandle {
     /// # screen = 0;
     /// let handle = XcbDisplayHandle::new(Some(connection), screen);
     /// ```
-    pub fn new(connection: Option<NonNull<c_void>>, screen: c_int) -> Self {
+    #[must_use]
+    pub const fn new(connection: Option<NonNull<c_void>>, screen: c_int) -> Self {
         Self { connection, screen }
     }
 }
@@ -173,7 +176,8 @@ impl XcbWindowHandle {
     /// // Optionally set the visual ID.
     /// handle.visual_id = None;
     /// ```
-    pub fn new(window: NonZeroU32) -> Self {
+    #[must_use]
+    pub const fn new(window: NonZeroU32) -> Self {
         Self {
             window,
             visual_id: None,

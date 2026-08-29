@@ -33,7 +33,8 @@ impl GbmDisplayHandle {
     /// # ptr = NonNull::from(&()).cast();
     /// let handle = GbmDisplayHandle::new(ptr);
     /// ```
-    pub fn new(gbm_device: NonNull<c_void>) -> Self {
+    #[must_use]
+    pub const fn new(gbm_device: NonNull<c_void>) -> Self {
         Self { gbm_device }
     }
 }
@@ -70,7 +71,8 @@ impl GbmWindowHandle {
     /// # ptr = NonNull::from(&()).cast();
     /// let handle = GbmWindowHandle::new(ptr);
     /// ```
-    pub fn new(gbm_surface: NonNull<c_void>) -> Self {
+    #[must_use]
+    pub const fn new(gbm_surface: NonNull<c_void>) -> Self {
         Self { gbm_surface }
     }
 }

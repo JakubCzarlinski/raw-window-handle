@@ -12,7 +12,7 @@ documentation = "https://docs.rs/raw-window-handle"
 rust-version = "1.85"
 
 [features]
-default = ["std"]
+default = ["alloc"]
 alloc = []
 std = ["alloc"]
 
@@ -55,3 +55,10 @@ objc2-app-kit = { version = "0.3.2", default-features = false, features = [
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
+
+[lints.clippy]
+pedantic = "warn"
+
+[lints.rust]
+unreachable_pub = "warn"
+private_interfaces = "warn"

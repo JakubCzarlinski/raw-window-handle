@@ -1,7 +1,7 @@
 use core::ffi::c_void;
 use core::ptr::NonNull;
 
-use super::DisplayHandle;
+use super::{DisplayHandle, RawDisplayHandle};
 
 /// Raw display handle for Android.
 ///
@@ -28,7 +28,8 @@ impl AndroidDisplayHandle {
     /// # use raw_window_handle::AndroidDisplayHandle;
     /// let handle = AndroidDisplayHandle::new();
     /// ```
-    pub fn new() -> Self {
+    #[must_use]
+    pub const fn new() -> Self {
         Self {}
     }
 }
@@ -47,9 +48,10 @@ impl DisplayHandle<'static> {
     /// let handle = DisplayHandle::android();
     /// do_something(handle);
     /// ```
-    pub fn android() -> Self {
+    #[must_use]
+    pub const fn android() -> Self {
         // SAFETY: No data is borrowed.
-        unsafe { Self::borrow_raw(AndroidDisplayHandle::new().into()) }
+        unsafe { Self::borrow_raw(RawDisplayHandle::Android(AndroidDisplayHandle::new())) }
     }
 }
 
@@ -85,7 +87,8 @@ impl AndroidNdkWindowHandle {
     /// # ptr = NonNull::from(&());
     /// let handle = AndroidNdkWindowHandle::new(ptr.cast());
     /// ```
-    pub fn new(a_native_window: NonNull<c_void>) -> Self {
+    #[must_use]
+    pub const fn new(a_native_window: NonNull<c_void>) -> Self {
         Self { a_native_window }
     }
 }
